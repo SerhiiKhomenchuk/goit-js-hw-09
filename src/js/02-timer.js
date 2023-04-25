@@ -2,7 +2,7 @@
 import flatpickr from "flatpickr";
 
 import "flatpickr/dist/flatpickr.min.css";
-import "flatpickr/dist/themes/dark.css";
+import "flatpickr/dist/themes/material_green.css";
 
 const input = document.querySelector("#datetime-picker");
 const btn = document.querySelector("button[data-start]");
@@ -11,53 +11,47 @@ const hours = document.querySelector("span[data-hours]");
 const minutes = document.querySelector("span[data-minutes]");
 const seconds = document.querySelector("span[data-seconds]");
 const timer = document.querySelector(".timer");
-const value = document.querySelectorAll(".value");
-// const field = document.querySelectorAll(".field");
-const label = document.querySelectorAll(".label");
-// console.log(label);
+// const value = document.querySelectorAll(".value");
+// const label = document.querySelectorAll(".label");
+let timerId = null
 timer.style = "gap:10px; padding: 5px; border: 2px black; margin-top: 40px;  border-radius: 4px;  background-color: aqua; display: flex; width: 400px;  text-align: center; font-size:25px; text-transform: uppercase;";
-// value.style = "font-size:35px;"
-// field.style = "background-color: white; display: block"
-// label[0,1,2,3].style = "font-size:25px;"
-
 let targetDate;
-    // console.log(btn);
 btn.setAttribute("disabled", "");
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-    onClose(selectedDates, dateStr, instance) {
+    
+  onClose(selectedDates, dateStr, instance) {
         targetDate = new Date(dateStr);
-
        
       if (targetDate.getTime()>options.defaultDate.getTime()) {
           btn.removeAttribute("disabled");
          
       } else {
           alert("Please choose a date in the future"); 
-}
-    //     console.log(selectedDates[0]);
-    //     console.log(dateStr);
-    //     console.log(instance);
-    //   return selectedDates;
-  },
+        }
+    },
 };
  btn.addEventListener("click", onStart);
           
-          function onStart() {
-              setInterval(() => {
-                
-                           
+function onStart() {
+  btn.disabled = true;
+  
+              let timerId = setInterval(() => {
+                                        
         days.textContent = convertMs(targetDate.getTime()-Date.now()).days.toString().padStart(2,"0");
                   hours.textContent = convertMs(targetDate.getTime()-Date.now()).hours.toString().padStart(2,"0");
                   minutes.textContent = convertMs(targetDate.getTime()-Date.now()).minutes.toString().padStart(2,"0");
                   seconds.textContent = convertMs(targetDate.getTime()-Date.now()).seconds.toString().padStart(2,"0");
-                  
-    }, 1000);
+                  if (seconds.textContent==="00"&& minutes.textContent==="00"&& hours.textContent==="00"&& days.textContent==="00") {
+              clearInterval(timerId)
+            }
+              }, 1000);
+                       
 }
-// console.log(options.defaultDate.getTime());
+
 flatpickr(input, options);
 
 
